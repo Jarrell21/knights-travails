@@ -1,4 +1,4 @@
-const ui = (() => {
+const UI = (() => {
   const gameBoardContainer = document.querySelector('.game-board-container');
   const placeKnightBtn = document.querySelector('.place-knight-btn');
   const selectEndBtn = document.querySelector('.select-end-btn');
@@ -10,32 +10,35 @@ const ui = (() => {
   };
 
   const createGameBoard = () => {
-    for (let i = 1; i <= 64; i += 1) {
-      gameBoardContainer.innerHTML += `<div class="board-box" data-id="${i}"></div>`;
+    for (let i = 8; i >= 1; i -= 1) {
+      for (let j = 1; j <= 8; j += 1) {
+        gameBoardContainer.innerHTML += `<div class="board-box" data-coord="[${i},${j}]"></div>`;
+      }
     }
   };
 
   const initButtons = () => {
-    placeKnightBtn.addEventListener('click', chooseBox);
+    placeKnightBtn.addEventListener('click', chooseStartPosition);
+    selectEndBtn.addEventListener('click', chooseEndPosition);
     resetBtn.addEventListener('click', clearGameBoard);
   };
 
-  const chooseBox = (e) => {
+  const chooseStartPosition = (e) => {
     const gameBoardBoxes = document.querySelectorAll('.board-box');
 
     e.target.classList.add('active');
 
     gameBoardBoxes.forEach((element) => {
-      element.style.cursor = 'pointer';
-      element.addEventListener('mouseover', changeBgColor);
-      element.addEventListener('mouseout', removeBgColor);
+      element.setAttribute('id', 'selecting');
       element.addEventListener('click', placeKnight);
     });
   };
 
   const clearGameBoard = () => {
     gameBoardContainer.innerHTML = '';
-    handleButtons();
+    enablePlaceKnightBtn();
+    disableSelectEndBtn();
+    disableResetBtn();
     createGameBoard();
   };
 
@@ -43,40 +46,80 @@ const ui = (() => {
     const gameBoardBoxes = document.querySelectorAll('.board-box');
 
     gameBoardBoxes.forEach((element) => {
-      element.style.cursor = '';
-      element.removeEventListener('mouseout', removeBgColor);
-      element.removeEventListener('mouseover', changeBgColor);
+      element.removeAttribute('id');
       element.removeEventListener('click', placeKnight);
     });
 
-    e.target.textContent = 'X';
-    e.target.classList.add('main-place');
+    e.target.textContent = 'S';
+    e.target.setAttribute('data-id', 'starting-place');
     changeBgColor(e);
-    handleButtons();
+    disablePlaceKnightBtn();
+    enableSelectEndBtn();
+    enableResetBtn();
   };
 
-  const handleButtons = () => {
-    if (placeKnightBtn.classList.contains('active')) {
-      placeKnightBtn.classList.remove('active');
-      placeKnightBtn.setAttribute('disabled', 'true');
-      selectEndBtn.removeAttribute('disabled');
-      resetBtn.removeAttribute('disabled');
-    } else {
-      placeKnightBtn.removeAttribute('disabled');
-      selectEndBtn.setAttribute('disabled', 'true');
-      resetBtn.setAttribute('disabled', 'true');
-    }
+  const chooseEndPosition = (e) => {
+    const gameBoardBoxes = document.querySelectorAll('.board-box');
+
+    e.target.classList.add('active');
+
+    gameBoardBoxes.forEach((element) => {
+      element.setAttribute('id', 'selecting');
+      element.addEventListener('click', selectEnd);
+    });
+  };
+
+  const selectEnd = (e) => {
+    const gameBoardBoxes = document.querySelectorAll('.board-box');
+
+    gameBoardBoxes.forEach((element) => {
+      element.removeAttribute('id');
+      element.removeEventListener('click', selectEnd);
+    });
+
+    e.target.textContent = 'X';
+    changeBgColor(e);
+    selectEndBtn.classList.remove('active');
+
+    const startingPlace = document.querySelector('[data-id="starting-place"]');
+    const start = startingPlace.getAttribute('data-coord');
+    const end = e.target.getAttribute('data-coord');
+
+    console.log(start, end);
+    // knightsTravails(start, end);
   };
 
   const changeBgColor = (e) => {
     e.target.style.background = 'red';
   };
 
-  const removeBgColor = (e) => {
-    e.target.style.background = '';
+  const enablePlaceKnightBtn = () => {
+    placeKnightBtn.removeAttribute('disabled');
+  };
+
+  const disablePlaceKnightBtn = () => {
+    placeKnightBtn.classList.remove('active');
+    placeKnightBtn.setAttribute('disabled', 'true');
+  };
+
+  const enableSelectEndBtn = () => {
+    selectEndBtn.removeAttribute('disabled');
+  };
+
+  const disableSelectEndBtn = () => {
+    selectEndBtn.classList.remove('active');
+    selectEndBtn.setAttribute('disabled', 'true');
+  };
+
+  const enableResetBtn = () => {
+    resetBtn.removeAttribute('disabled');
+  };
+
+  const disableResetBtn = () => {
+    resetBtn.setAttribute('disabled', 'true');
   };
 
   return { loadPage };
 })();
 
-export default ui;
+export default UI;
