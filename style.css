@@ -40,3 +40,8 @@ body {
     color: white;
     background-color: black;
 }
+
+#selecting:hover {
+    cursor: pointer;
+    background-color: red;
+}
