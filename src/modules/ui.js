@@ -1,18 +1,20 @@
+import Graph from './graph';
+
 const UI = (() => {
-  const gameBoardContainer = document.querySelector('.game-board-container');
+  const chessBoardContainer = document.querySelector('.chess-board-container');
   const placeKnightBtn = document.querySelector('.place-knight-btn');
   const selectEndBtn = document.querySelector('.select-end-btn');
   const resetBtn = document.querySelector('.reset-btn');
 
   const loadPage = () => {
-    createGameBoard();
+    createChessBoard();
     initButtons();
   };
 
-  const createGameBoard = () => {
+  const createChessBoard = () => {
     for (let i = 8; i >= 1; i -= 1) {
       for (let j = 1; j <= 8; j += 1) {
-        gameBoardContainer.innerHTML += `<div class="board-box" data-coord="[${i},${j}]"></div>`;
+        chessBoardContainer.innerHTML += `<div class="chess-box" data-coord="${i},${j}">${i},${j}</div>`;
       }
     }
   };
@@ -20,64 +22,54 @@ const UI = (() => {
   const initButtons = () => {
     placeKnightBtn.addEventListener('click', chooseStartPosition);
     selectEndBtn.addEventListener('click', chooseEndPosition);
-    resetBtn.addEventListener('click', clearGameBoard);
+    resetBtn.addEventListener('click', clearChessBoard);
   };
 
   const chooseStartPosition = (e) => {
-    const gameBoardBoxes = document.querySelectorAll('.board-box');
+    const chessBoardBoxes = document.querySelectorAll('.chess-box');
 
     e.target.classList.add('active');
 
-    gameBoardBoxes.forEach((element) => {
+    chessBoardBoxes.forEach((element) => {
       element.setAttribute('id', 'selecting');
       element.addEventListener('click', placeKnight);
     });
   };
 
-  const clearGameBoard = () => {
-    gameBoardContainer.innerHTML = '';
-    enablePlaceKnightBtn();
-    disableSelectEndBtn();
-    disableResetBtn();
-    createGameBoard();
-  };
-
-  const placeKnight = (e) => {
-    const gameBoardBoxes = document.querySelectorAll('.board-box');
-
-    gameBoardBoxes.forEach((element) => {
-      element.removeAttribute('id');
-      element.removeEventListener('click', placeKnight);
-    });
-
-    e.target.textContent = 'S';
-    e.target.setAttribute('data-id', 'starting-place');
-    changeBgColor(e);
-    disablePlaceKnightBtn();
-    enableSelectEndBtn();
-    enableResetBtn();
-  };
-
   const chooseEndPosition = (e) => {
-    const gameBoardBoxes = document.querySelectorAll('.board-box');
+    const chessBoardBoxes = document.querySelectorAll('.chess-box');
 
     e.target.classList.add('active');
 
-    gameBoardBoxes.forEach((element) => {
+    chessBoardBoxes.forEach((element) => {
       element.setAttribute('id', 'selecting');
       element.addEventListener('click', selectEnd);
     });
   };
 
-  const selectEnd = (e) => {
-    const gameBoardBoxes = document.querySelectorAll('.board-box');
+  const placeKnight = (e) => {
+    const chessBoardBoxes = document.querySelectorAll('.chess-box');
 
-    gameBoardBoxes.forEach((element) => {
+    chessBoardBoxes.forEach((element) => {
+      element.removeAttribute('id');
+      element.removeEventListener('click', placeKnight);
+    });
+
+    // e.target.textContent = 'S';
+    e.target.setAttribute('data-id', 'starting-place');
+    changeBgColor(e);
+    disablePlaceKnightBtn();
+  };
+
+  const selectEnd = (e) => {
+    const chessBoardBoxes = document.querySelectorAll('.chess-box');
+
+    chessBoardBoxes.forEach((element) => {
       element.removeAttribute('id');
       element.removeEventListener('click', selectEnd);
     });
 
-    e.target.textContent = 'X';
+    // e.target.textContent = 'X';
     changeBgColor(e);
     selectEndBtn.classList.remove('active');
 
@@ -85,8 +77,13 @@ const UI = (() => {
     const start = startingPlace.getAttribute('data-coord');
     const end = e.target.getAttribute('data-coord');
 
-    console.log(start, end);
-    // knightsTravails(start, end);
+    console.log(Graph.knightsTravails(start, end));
+  };
+
+  const clearChessBoard = () => {
+    chessBoardContainer.innerHTML = '';
+    enablePlaceKnightBtn();
+    createChessBoard();
   };
 
   const changeBgColor = (e) => {
@@ -95,28 +92,20 @@ const UI = (() => {
 
   const enablePlaceKnightBtn = () => {
     placeKnightBtn.removeAttribute('disabled');
+
+    // Disable selectBtn and resetBtn
+    selectEndBtn.classList.remove('active');
+    selectEndBtn.setAttribute('disabled', 'true');
+    resetBtn.setAttribute('disabled', 'true');
   };
 
   const disablePlaceKnightBtn = () => {
     placeKnightBtn.classList.remove('active');
     placeKnightBtn.setAttribute('disabled', 'true');
-  };
 
-  const enableSelectEndBtn = () => {
+    // Enable selectBtn and resetBtn
     selectEndBtn.removeAttribute('disabled');
-  };
-
-  const disableSelectEndBtn = () => {
-    selectEndBtn.classList.remove('active');
-    selectEndBtn.setAttribute('disabled', 'true');
-  };
-
-  const enableResetBtn = () => {
     resetBtn.removeAttribute('disabled');
-  };
-
-  const disableResetBtn = () => {
-    resetBtn.setAttribute('disabled', 'true');
   };
 
   return { loadPage };
