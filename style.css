@@ -19,13 +19,13 @@ body {
     width: 500px;
     height: 500px;
     margin: 0 auto;
+    border: solid 1px black;
 }
 
 .chess-board-container div {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: solid 1px black;
     background-color: white;
 }
 
@@ -37,11 +37,20 @@ body {
 .chess-board-container div:nth-child(n + 41):nth-child(-n + 48):nth-child(odd),
 .chess-board-container div:nth-child(n + 49):nth-child(-n + 56):nth-child(even),
 .chess-board-container div:nth-child(n + 57):nth-child(-n + 64):nth-child(odd) {
-    color: white;
     background-color: black;
 }
 
-#selecting:hover {
+#choosing-start:hover {
+    cursor: pointer;
+    background-color: green;
+}
+
+#choosing-end:hover {
     cursor: pointer;
     background-color: red;
+}
+
+.knight-img {
+    width: 80%;
+    height: 80%;
 }
