@@ -36,7 +36,8 @@ const Graph = (() => {
   };
 
   const knightsTravails = (start, end) => {
-    let numberOfMoves = 0;
+    addVertices();
+    addEdges();
     const paths = [];
     const visited = new Set();
     const queue = [];
@@ -56,19 +57,11 @@ const Graph = (() => {
       }
     }
 
-    const moves = paths[0].map((element) => {
-      numberOfMoves += 1;
-      return element;
-    });
-    // console.log(moves);
-    // console.log(numberOfMoves);
-    return { moves, numberOfMoves };
+    const moves = paths[0].map((element) => element);
+    return moves;
   };
 
-  return { addVertices, addEdges, knightsTravails };
+  return { knightsTravails };
 })();
-
-Graph.addVertices();
-Graph.addEdges();
 
 export default Graph;
