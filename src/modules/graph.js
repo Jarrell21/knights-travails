@@ -36,8 +36,6 @@ const Graph = (() => {
   };
 
   const knightsTravails = (start, end) => {
-    addVertices();
-    addEdges();
     const paths = [];
     const visited = new Set();
     const queue = [];
@@ -61,7 +59,10 @@ const Graph = (() => {
     return moves;
   };
 
-  return { knightsTravails };
+  return { addVertices, addEdges, knightsTravails };
 })();
+
+Graph.addVertices();
+Graph.addEdges();
 
 export default Graph;
